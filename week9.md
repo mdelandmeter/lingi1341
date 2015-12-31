@@ -35,8 +35,11 @@ représenté l'ensemble des ACK comme un seul grand ACK)
 
 #### 4. Assuming that there are no losses and that there is no congestion in the network. If the sender writes x bytes on a newly established TCP connection, derive a formula that computes the minimum time required to deliver all these x bytes to the receiver. For the derivation of this formula, assume that x is a multiple of the maximum segment size and that the receive window and the slow-start threshold are larger than x.
 
-Supposons que x = k.RTT 
-Si rwin >> cwnd: on enverra en [log2(k)*RTT] arrondi au supérieur. 
+Supposons que x = k.MSS 
+Si rwin >> cwnd : On enverra alors à chaque fois un segment de cwnd bytes. On est en slow-start, on enverra donc 1 MSS, puis 2, puis 4, etc. Le sender prendra donc le temps suivant pour délivrer x bytes : log2(1+x/MSS).RTT. On a un shift (+1 dans le log) car il faut que ça prenne 0 seconde pour envoyer 0 bytes.
+
+Ainsi, si on veut envoyer 31 MSS, ça prendra 5 RTT, car on envoie 1+2+4+8+16 MSS -> log2(1+31) = 5.
+
 Si on tient compte du temps de sérialisation, on doit ajouter 
 (log2(k)-1) * le temps de sérialisation. 
 
